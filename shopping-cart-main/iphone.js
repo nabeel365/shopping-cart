@@ -1,9 +1,10 @@
-console.log('js file added')
 
 
-
-const subTotal = document.getElementById('sub-total')
-
+const subTotalId = document.getElementById('sub-total');
+const finalTotal = document.getElementById('final-total');
+const texAmout = document.getElementById('tax-amount');
+const phoneTotalElement = document.getElementById('phone-price');
+const caseTotalElement = document.getElementById('case-price');
 
 // plus btn -- increasing quantity value ...
 
@@ -46,17 +47,17 @@ document.getElementById('btn-case-minus').addEventListener('click', function(){
 
 // using a fucntion ... for case ..
 
-function updateData(isIncrease){
+function updateData(isIncrease) {
     const caseNumberField = document.getElementById('case-number-field');
     const caseNumberString = caseNumberField.value;
     const previouCaseNumber = parseInt(caseNumberString);
 
     let newCaseNumber;
- 
-    if(isIncrease){
+
+    if (isIncrease) {
         newCaseNumber = previouCaseNumber + 1;
     }
-    else{
+    else {
         newCaseNumber = previouCaseNumber - 1;
     }
 
@@ -66,20 +67,22 @@ function updateData(isIncrease){
 }
 
 
-document.getElementById('btn-case-plus').addEventListener('click', function(){
+document.getElementById('btn-case-plus').addEventListener('click', function () {
     const newCaseNumber = updateData(true);
 
     const caseTotalPrice = newCaseNumber * 59;
     const caseTotalElement = document.getElementById('case-price');
     caseTotalElement.innerText = caseTotalPrice;
+    subTotalNumber();
 })
 
 
-document.getElementById('btn-case-minus').addEventListener('click', function(){
+document.getElementById('btn-case-minus').addEventListener('click', function () {
     const newCaseNumber = updateData(false);
     const caseTotalPrice = newCaseNumber * 59;
     const caseTotalElement = document.getElementById('case-price');
     caseTotalElement.innerText = caseTotalPrice;
+    subTotalNumber();
 })
 
 /** SAME FUNCTION ACNT BE USED FOR DIIFERENT CASES(GIVING DIFF OUTPUTS) EVEN IF THEIR CONDITIONS ARE SAME */
@@ -87,19 +90,19 @@ document.getElementById('btn-case-minus').addEventListener('click', function(){
 
 // using a fucntion ... for iphone ..
 
-function updatePhoneData(ifIncrease){
+function updatePhoneData(ifIncrease) {
     const phoneNumberField = document.getElementById('phone-number-field');
     const phoneNumberString = phoneNumberField.value;
     const previousPhoneNumber = parseInt(phoneNumberString);
-  
+
 
     let newPhoneNumber;
 
-    
-    if(ifIncrease){
+
+    if (ifIncrease) {
         newPhoneNumber = previousPhoneNumber + 1;
     }
-    else{
+    else {
         newPhoneNumber = previousPhoneNumber - 1;
     }
 
@@ -113,7 +116,7 @@ function updatePhoneData(ifIncrease){
 
 // lec 5 
 
-function getTextElementValueById(elementId){
+function getTextElementValueById(elementId) {
     const phoneTotalElement = document.getElementById(elementId);
     const currentPhoneTotalString = phoneTotalElement.innerText;
     const currentPhoneTotal = parseInt(currentPhoneTotalString);
@@ -121,37 +124,72 @@ function getTextElementValueById(elementId){
 }
 
 
-document.getElementById('btn-phone-plus').addEventListener('click', function(){
+document.getElementById('btn-phone-plus').addEventListener('click', function () {
     const newPhoneNumber = updatePhoneData(true);
 
     const phoneTotalPrice = newPhoneNumber * 1219;
     const phoneTotalElement = document.getElementById('phone-price');
     phoneTotalElement.innerText = phoneTotalPrice;
-    
-    
+
+
+    subTotalNumber();
     // lec- 5
     // caculate total price ..
 
     const currentPhoneTotal = getTextElementValueById('phone-total');
     const currentCaseTotal = getTextElementValueById('case-total');
-    
+
     const currentSubTotal = currentPhoneTotal + currentCaseTotal;
     const SubTotalElement = document.getElementById('sub-total');
     SubTotalElement.innerText = currentSubTotal;
 
 
-    
 })
 
 
-document.getElementById('btn-phone-minus').addEventListener('click', function(){
+document.getElementById('btn-phone-minus').addEventListener('click', function () {
     const newPhoneNumber = updatePhoneData(false);
 
     const phoneTotalPrice = newPhoneNumber * 1219;
     const phoneTotalElement = document.getElementById('phone-price');
     phoneTotalElement.innerText = phoneTotalPrice;
+    subTotalNumber();
 })
 
 
+//  get total item calculate 
+function subTotalNumber(index) {
+    let subTotal;
+    if (index === 1) {
+        subTotal = parseFloat(subTotalId.innerText) - parseFloat(phoneTotalElement.innerText);
+    }
+    else if (index === 2) {
+        subTotal = parseFloat(subTotalId.innerText) - parseFloat(caseTotalElement.innerText);
+    }
+    else {
+        subTotal = parseFloat(phoneTotalElement.innerText) + parseFloat(caseTotalElement.innerText);
+    }
+
+    subTotalId.innerText = subTotal < 0 ? 0 : subTotal;
+    finalTotal.innerText = (subTotal + parseFloat(texAmout.innerText)) < 0 ? 0 : (subTotal + parseFloat(texAmout.innerText));
+}
 
 
+
+// remove Items 
+
+function rmoveItem(index) {
+    subTotalNumber(index)
+    document.getElementById(`removeItem${index}`).style.display = "none";
+}
+
+// check out btn 
+function checkOut() {
+    
+    if(parseFloat(finalTotal.innerText) > 0 ){
+        alert('✅ আপনি ' + finalTotal.innerText + ' টাকার প্রডাক্ট অডার করেছেন')
+    }
+    else{
+        alert('❌ দুর মিয়া, আগে প্রডাকট এড করেন । আপনার কার্ডে কোনো প্রডাক্ট নাই 😅')
+    }
+}
